@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+if command -v zed >/dev/null 2>&1; then
+    exec zed "$@"
+elif command -v code >/dev/null 2>&1; then
+    exec code "$@"
+elif command -v nvim >/dev/null 2>&1; then
+    exec foot -e nvim "$@"
+else
+    exec foot -e nano "$@"
+fi

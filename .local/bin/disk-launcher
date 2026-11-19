@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Disk Usage Analyzer TUI Launcher (gdu / ncdu)
+if command -v gdu >/dev/null 2>&1; then
+    exec foot --app-id=floating-tui --title="Disk Usage Analyzer (gdu)" gdu "$@"
+elif command -v ncdu >/dev/null 2>&1; then
+    exec foot --app-id=floating-tui --title="Disk Usage Analyzer (ncdu)" ncdu "$@"
+else
+    exec ~/.local/bin/caelestia-presentation-terminal "Install gdu" "sudo pacman -S --needed --noconfirm gdu"
+fi

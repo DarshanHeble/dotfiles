@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+"""
+Caelestia Clipboard Backend Service
+Communicates with cliphist, decodes image previews, and outputs JSON or handles paste actions.
+"""
+
+import sys
+import os
+import re
+import json
+import subprocess
+
+CACHE_DIR = os.path.expanduser("~/.cache/caelestia/clipboard")
+os.makedirs(CACHE_DIR, exist_ok=True)
+
+def list_clips():
+    res = subprocess.run(["cliphist", "list"], capture_output=True, text=True)
+    items = []
+    
+    for line in res.stdout.strip().split("\n"):
+        if not line:
+            continue
+        parts = line.split("\t", 1)
+        if len(parts) < 2:
+            continue
+        cid = parts[0].strip()
+        text = parts[1].strip()
+        
+        # Check if binary/image: e.g. [[ binary data 97 KiB png 385x502 ]] or [[ binary data ... ]]
+        is_image = text.startswith("[[ binary data") and ("png" in text or "jpg" in text or "jpeg" in text or "webp" in text or "bmp" in text or "x" in text)
+        img_path = ""
+        dims = ""
+        
+        if is_image:
+            dim_match = re.search(r"(\d+)x(\d+)", text)
+            if dim_match:
+                dims = f"{dim_match.group(1)}x{dim_match.group(2)}"
+            
+            img_path = os.path.join(CACHE_DIR, f"{cid}.png")
+            if not os.path.exists(img_path) or os.path.getsize(img_path) == 0:
+                try:
+                    with open(img_path, "wb") as f:
+                        subprocess.run(["cliphist", "decode", cid], stdout=f, timeout=2)
+                except Exception:
+                    pass
+                    
+        items.append({
+            "id": cid,
+            "text": text,
+            "isImage": is_image,
+            "dims": dims,
+            "imagePath": f"file://{img_path}" if is_image and os.path.exists(img_path) and os.path.getsize(img_path) > 0 else ""
+        })
+        
+    print(json.dumps(items))
+
+def paste_clip(cid):
+    p = subprocess.Popen(["cliphist", "decode", cid], stdout=subprocess.PIPE)
+    subprocess.run(["wl-copy"], stdin=p.stdout)
+    p.wait()
+
+def delete_clip(cid):
+    p = subprocess.Popen(["cliphist", "decode", cid], stdout=subprocess.PIPE)
+    subprocess.run(["cliphist", "delete"], stdin=p.stdout)
+    p.wait()
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2 or sys.argv[1] == "list":
+        list_clips()
+    elif sys.argv[1] == "paste" and len(sys.argv) > 2:
+        paste_clip(sys.argv[2])
+    elif sys.argv[1] == "delete" and len(sys.argv) > 2:
+        delete_clip(sys.argv[2])

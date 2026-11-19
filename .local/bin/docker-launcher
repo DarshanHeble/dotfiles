@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Docker / Container Monitor TUI Launcher (lazydocker)
+exec foot --app-id=floating-tui --title="Container Monitor (lazydocker)" lazydocker "$@"

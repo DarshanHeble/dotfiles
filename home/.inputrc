@@ -1,0 +1,6 @@
+$include /etc/inputrc
+
+# Case-insensitive tab completion (e.g., typing 'd' completes 'Downloads/', 'Documents/')
+set completion-ignore-case on
+set completion-map-case on
+set show-all-if-ambiguous on

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Audio Mixer TUI Launcher (wiremix)
+exec foot --app-id=floating-tui --title="Audio Mixer (wiremix)" wiremix "$@"

@@ -1,0 +1,3 @@
+module qs.modules.clipboard
+Wrapper 1.0 Wrapper.qml
+ClipboardContent 1.0 ClipboardContent.qml

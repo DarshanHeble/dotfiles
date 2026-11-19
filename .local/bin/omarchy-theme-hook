@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Omarchy Theme Hook Dispatcher
+# Executes all scripts in ~/.config/omarchy/hooks/theme-set.d/ in sorted order.
+# Compatible with Caelestia postHook and Omarchy theme-set events.
+# ==============================================================================
+
+set -euo pipefail
+
+HOOKS_DIR="$HOME/.config/omarchy/hooks/theme-set.d"
+THEME_NAME="${SCHEME_NAME:-${1:-default}}"
+
+if [[ -d "$HOOKS_DIR" ]]; then
+    for hook in "$HOOKS_DIR"/*; do
+        if [[ -x "$hook" ]]; then
+            "$hook" "$THEME_NAME" || echo "Hook $(basename "$hook") failed with $?" >&2
+        fi
+    done
+fi

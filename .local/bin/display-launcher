@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# Display / Monitor Management Launcher
+# Prioritizes nwg-displays or wdisplays for graphical layout / resolution management,
+# and supports quick mirroring or toggling.
+
+ACTION="${1:-gui}"
+
+case "$ACTION" in
+    mirror)
+        # Mirror internal laptop display to external displays
+        PRIMARY=$(hyprctl monitors -j | jq -r '.[0].name // "eDP-1"')
+        SECONDARY=$(hyprctl monitors -j | jq -r '.[1].name // empty')
+        if [ -n "$SECONDARY" ]; then
+            hyprctl keyword monitor "$SECONDARY,preferred,auto,1,mirror,$PRIMARY"
+            caelestia shell toaster info "Display Mirroring" "Mirroring $PRIMARY to $SECONDARY" "screen_share"
+        else
+            caelestia shell toaster warn "Display Mirroring" "No secondary monitor detected" "monitor"
+        fi
+        ;;
+    extend)
+        # Reset to automatic extended positions
+        hyprctl keyword monitor ",preferred,auto,1"
+        caelestia shell toaster info "Display Layout" "Extended desktop on all displays" "desktop_windows"
+        ;;
+    *)
+        # Launch Graphical Monitor Manager
+        if command -v nwg-displays >/dev/null 2>&1; then
+            exec nwg-displays
+        elif command -v wdisplays >/dev/null 2>&1; then
+            exec wdisplays
+        else
+            exec ~/.local/bin/caelestia-presentation-terminal "Install Display Manager (nwg-displays)" "sudo pacman -S --needed --noconfirm nwg-displays"
+        fi
+        ;;
+esac

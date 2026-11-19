@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ACTION="${1:-}"
+
+case "$ACTION" in
+  launcher)
+    quickshell ipc call launcher toggle
+    ;;
+  quicksettings|dashboard|control)
+    quickshell ipc call quicksettings toggle
+    ;;
+  theme)
+    SUB="${2:-reload}"
+    if [ "$SUB" = "reload" ]; then
+      quickshell ipc call theme reload
+    else
+      quickshell ipc call theme set "$SUB"
+    fi
+    ;;
+  *)
+    echo "Usage: qs-ctl [launcher | quicksettings | theme <reload | theme_name>]"
+    exit 1
+    ;;
+esac

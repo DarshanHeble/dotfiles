@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Sample hook: Notify user on theme change
+# To enable, rename by removing the '.sample' extension and make it executable:
+#   mv show-theme-notification.sample show-theme-notification.sh
+#   chmod +x show-theme-notification.sh
+
+THEME_NAME="${1:-$SCHEME_NAME}"
+notify-send -a "Theme Engine" -i preferences-desktop-theme "Theme Changed" "Active theme: ${THEME_NAME^} (${SCHEME_MODE:-dark})"

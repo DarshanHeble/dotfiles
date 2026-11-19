@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [ -x "/usr/bin/spotify" ]; then
+    exec /usr/bin/spotify "$@"
+elif command -v spotify-launcher >/dev/null 2>&1; then
+    exec spotify-launcher "$@"
+elif command -v flatpak >/dev/null 2>&1 && flatpak info com.spotify.Client >/dev/null 2>&1; then
+    exec flatpak run com.spotify.Client "$@"
+else
+    # Open terminal to install Spotify via paru
+    exec alacritty --title "Install Spotify" -e sh -c 'echo "Spotify is not installed yet. Installing spotify via paru..."; paru -S spotify; echo "Installation finished. Press Enter to exit..."; read -r'
+fi

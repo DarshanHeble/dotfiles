@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Bluetooth TUI Launcher using bluetui
+exec foot --app-id=floating-tui --title="Bluetooth Manager (bluetui)" bluetui "$@"

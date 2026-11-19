@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export PATH="$HOME/.local/bin:$PATH"
+
+STATE_FILE="/run/user/$(id -u)/voxtype/state"
+
+if pgrep -x voxtype > /dev/null 2>&1; then
+    # Currently running / recording -> Stop recording, transcribe, and quit daemon
+    voxtype record stop || true
+    
+    # Wait for voxtype to finish typing at cursor (state returns to idle or file disappears)
+    for _ in {1..50}; do
+        if [[ -f "$STATE_FILE" ]]; then
+            st=$(tr -d '[:space:]' < "$STATE_FILE" 2>/dev/null || echo "idle")
+            if [[ "$st" == "idle" ]]; then
+                break
+            fi
+        fi
+        sleep 0.1
+    done
+
+    # Cleanly terminate voxtype daemon so zero background processes remain
+    pkill -x voxtype 2>/dev/null || true
+    rm -f "$STATE_FILE"
+    
+    caelestia shell toaster success "VoxType" "Transcribed & typed" "check_circle" || true
+else
+    # Not running -> Clean slate
+    rm -f "$STATE_FILE"
+    
+    # Launch daemon on-demand in background
+    voxtype daemon >/dev/null 2>&1 &
+    
+    # Wait until daemon socket/state is initialized (~50ms)
+    for _ in {1..30}; do
+        if [[ -e "$STATE_FILE" ]] || voxtype record start >/dev/null 2>&1; then
+            break
+        fi
+        sleep 0.02
+    done
+    
+    # Start recording
+    voxtype record start >/dev/null 2>&1 || true
+    caelestia shell toaster info "VoxType" "Listening... (Press shortcut to stop)" "mic" || true
+fi

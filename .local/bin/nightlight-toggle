@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# Night Light / Blue Light Filter Toggle (hyprsunset)
+# Toggles between normal temperature (6500K) and warm temperature (3500K)
+
+if ! command -v hyprsunset >/dev/null 2>&1; then
+    exec ~/.local/bin/caelestia-presentation-terminal "Install hyprsunset" "sudo pacman -S --needed --noconfirm hyprsunset"
+fi
+
+if pgrep -x hyprsunset >/dev/null 2>&1; then
+    pkill -x hyprsunset
+    caelestia shell toaster info "Night Light Off" "Restored standard color temperature (6500K)" "wb_sunny"
+else
+    hyprsunset -t 3500 &
+    caelestia shell toaster info "Night Light On" "Warm color temperature active (3500K)" "nights_stay"
+fi

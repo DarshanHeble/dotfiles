@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+# Caffeine / Idle Inhibitor Toggle
+# Uses Caelestia's native idle inhibitor service and sends toast notification
+
+if caelestia shell idleInhibitor isEnabled | grep -q "true"; then
+    caelestia shell idleInhibitor disable
+    caelestia shell toaster info "Caffeine Disabled" "Normal power management & sleep restored" "bedtime"
+else
+    caelestia shell idleInhibitor enable
+    caelestia shell toaster info "Caffeine Enabled" "Screen sleep and locking are now inhibited" "coffee"
+fi

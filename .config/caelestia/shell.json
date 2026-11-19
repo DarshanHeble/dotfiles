@@ -1,0 +1,215 @@
+{
+  "appearance": {
+    "transparency": {
+      "enabled": false
+    }
+  },
+  "background": {
+    "wallpaperEnabled": true
+  },
+  "bar": {
+    "activeWindow": {
+      "compact": true,
+      "inverted": false,
+      "showOnHover": false
+    },
+    "clock": {
+      "background": false,
+      "showDate": false,
+      "showSeconds": false
+    },
+    "dragThreshold": 0,
+    "persistent": true,
+    "popouts": {
+      "activeWindow": true
+    },
+    "showOnHover": true,
+    "workspaces": {
+      "activeTrail": true,
+      "showUnoccupied": true
+    }
+  },
+  "dashboard": {
+    "dragThreshold": 0,
+    "enabled": true
+  },
+  "general": {
+    "apps": {
+      "explorer": [
+        "nautilus",
+        "--new-window"
+      ]
+    },
+    "showOverFullscreen": true
+  },
+  "launcher": {
+    "actionPrefix": ">",
+    "actions": [
+      {
+        "command": [
+          "autocomplete",
+          "calc"
+        ],
+        "dangerous": false,
+        "description": "Do simple maths equations (powered by Qalc)",
+        "enabled": true,
+        "icon": "calculate",
+        "name": "Calculator"
+      },
+      {
+        "command": [
+          "autocomplete",
+          "scheme"
+        ],
+        "dangerous": false,
+        "description": "Change the current colour scheme",
+        "enabled": true,
+        "icon": "palette",
+        "name": "Scheme"
+      },
+      {
+        "command": [
+          "autocomplete",
+          "wallpaper"
+        ],
+        "dangerous": false,
+        "description": "Change the current wallpaper",
+        "enabled": true,
+        "icon": "image",
+        "name": "Wallpaper"
+      },
+      {
+        "command": [
+          "autocomplete",
+          "variant"
+        ],
+        "dangerous": false,
+        "description": "Change the current scheme variant",
+        "enabled": true,
+        "icon": "colors",
+        "name": "Variant"
+      },
+      {
+        "command": [
+          "caelestia",
+          "wallpaper",
+          "-r"
+        ],
+        "dangerous": false,
+        "description": "Switch to a random wallpaper",
+        "enabled": true,
+        "icon": "casino",
+        "name": "Random"
+      },
+      {
+        "command": [
+          "setMode",
+          "light"
+        ],
+        "dangerous": false,
+        "description": "Change the scheme to light mode",
+        "enabled": true,
+        "icon": "light_mode",
+        "name": "Light"
+      },
+      {
+        "command": [
+          "setMode",
+          "dark"
+        ],
+        "dangerous": false,
+        "description": "Change the scheme to dark mode",
+        "enabled": true,
+        "icon": "dark_mode",
+        "name": "Dark"
+      },
+      {
+        "command": [
+          "caelestia",
+          "shell",
+          "nexus",
+          "open"
+        ],
+        "dangerous": false,
+        "description": "Configure the shell",
+        "enabled": true,
+        "icon": "settings",
+        "name": "Settings"
+      }
+    ],
+    "dragThreshold": 0,
+    "enabled": true,
+    "useFuzzy": {
+      "actions": true,
+      "apps": true,
+      "schemes": true,
+      "variants": true,
+      "wallpapers": true
+    }
+  },
+  "lock": {
+    "hideNotifs": true
+  },
+  "session": {
+    "commands": {
+      "logout": [
+        "loginctl",
+        "terminate-user",
+        ""
+      ]
+    },
+    "dragThreshold": 0,
+    "enabled": true
+  },
+  "sidebar": {
+    "dragThreshold": 0,
+    "enabled": true
+  },
+  "utilities": {
+    "cards": {
+      "keepAwake": false,
+      "quickToggles": true
+    },
+    "quickToggles": [
+      {
+        "enabled": true,
+        "id": "wifi"
+      },
+      {
+        "enabled": true,
+        "id": "bluetooth"
+      },
+      {
+        "enabled": true,
+        "id": "mic"
+      },
+      {
+        "enabled": true,
+        "id": "voxtype"
+      },
+      {
+        "enabled": true,
+        "id": "dnd"
+      },
+      {
+        "enabled": true,
+        "id": "caffeine"
+      },
+      {
+        "enabled": true,
+        "id": "nightlight"
+      },
+      {
+        "enabled": true,
+        "id": "display"
+      },
+      {
+        "enabled": true,
+        "id": "settings"
+      }
+    ],
+    "toasts": {
+      "numLockChanged": true
+    }
+  }
+}

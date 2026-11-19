@@ -1,0 +1,27 @@
+#!/bin/bash
+case "$1" in
+    "get")
+        if [ -f /run/tlp/last_pwr ]; then
+            read -r pp ps < /run/tlp/last_pwr
+            case "$pp" in
+                0) echo "performance" ;;
+                1) echo "balanced" ;;
+                2) echo "power-saver" ;;
+                *) echo "balanced" ;;
+            esac
+        else
+            echo "balanced"
+        fi
+        ;;
+    "set")
+        target="$2"
+        case "$target" in
+            "performance"|"perf"|"0") sudo -n /usr/bin/tlp performance ;;
+            "power-saver"|"saver"|"2") sudo -n /usr/bin/tlp power-saver ;;
+            "balanced"|"balance"|"1"|*) sudo -n /usr/bin/tlp balanced ;;
+        esac
+        ;;
+    *)
+        echo "Usage: tlp-control {get|set [performance|balanced|power-saver]}"
+        ;;
+esac

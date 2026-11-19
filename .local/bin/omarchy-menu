@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# Check if omarchy-menu quickshell instance is running
+if ! quickshell list --all 2>/dev/null | grep -q "omarchy-menu/shell.qml"; then
+    quickshell -c omarchy-menu -d >/dev/null 2>&1
+    sleep 0.3
+fi
+
+ARG="${1:-toggle}"
+
+case "$ARG" in
+    toggle)
+        quickshell ipc -c omarchy-menu call omarchyMenu toggle
+        ;;
+    open|root)
+        quickshell ipc -c omarchy-menu call omarchyMenu open
+        ;;
+    close)
+        quickshell ipc -c omarchy-menu call omarchyMenu close
+        ;;
+    apps)
+        quickshell ipc -c omarchy-menu call omarchyMenu apps
+        ;;
+    keybindings|keys)
+        quickshell ipc -c omarchy-menu call omarchyMenu keybindings
+        ;;
+    aur)
+        quickshell ipc -c omarchy-menu call omarchyMenu aur
+        ;;
+    *)
+        quickshell ipc -c omarchy-menu call omarchyMenu toggle
+        ;;
+esac

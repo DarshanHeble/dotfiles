@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# omarchy-theme-set
+# Set theme interactively or via CLI argument, applying colors to
+# Caelestia Shell, Foot, Alacritty, Ghostty, Kitty, and system hooks.
+# ==============================================================================
+
+set -euo pipefail
+
+usage() {
+    echo "Usage: omarchy-theme-set <scheme_name> [mode: dark|light] [flavour] [variant]"
+    echo ""
+    echo "Examples:"
+    echo "  omarchy-theme-set catppuccin dark mocha expressive"
+    echo "  omarchy-theme-set tokyonight dark"
+    echo "  omarchy-theme-set dracula dark"
+    echo "  omarchy-theme-set nord dark"
+    echo "  omarchy-theme-set gruvbox dark"
+    echo "  omarchy-theme-set solarized light"
+    echo ""
+    echo "Available schemes:"
+    caelestia scheme list --names | sed 's/^/  - /'
+    exit 1
+}
+
+if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" ]]; then
+    usage
+fi
+
+NAME="$1"
+MODE="${2:-dark}"
+FLAVOUR="${3:-}"
+VARIANT="${4:-expressive}"
+
+ARGS=(-n "$NAME" -m "$MODE" -v "$VARIANT")
+if [[ -n "$FLAVOUR" ]]; then
+    ARGS+=(-f "$FLAVOUR")
+fi
+
+echo "Applying theme: $NAME ($MODE)..."
+caelestia scheme set "${ARGS[@]}"
+
+# Manually trigger hook if not called by caelestia
+/home/darshan/.local/bin/omarchy-theme-hook "$NAME"
+
+echo "Theme '$NAME' ($MODE) successfully applied across desktop and terminals!"

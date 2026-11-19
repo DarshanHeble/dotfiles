@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# Caelestia Presentation Terminal
+# Spawns a dedicated centered, floating terminal for package installations,
+# system updates, and interactive commands with clean styling.
+
+TITLE="${1:-Installing Package}"
+CMD="$2"
+
+if [ -z "$CMD" ]; then
+    echo "Usage: caelestia-presentation-terminal <title> <command>"
+    exit 1
+fi
+
+exec foot \
+    --app-id=caelestia-presentation \
+    --title="$TITLE" \
+    --override="pad=24x24" \
+    sh -c "
+        clear
+        printf '\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n'
+        printf '  \033[1;36m➜ %s\033[0m\n' '$TITLE'
+        printf '\033[1;34m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\033[0m\n\n'
+        $CMD
+        EXIT_CODE=\$?
+        printf '\n\033[1;34m────────────────────────────────────────────────────────────────────────\033[0m\n'
+        if [ \$EXIT_CODE -eq 0 ]; then
+            printf '  \033[1;32m✔ Process completed successfully!\033[0m\n'
+        else
+            printf '  \033[1;31m✘ Process finished with code %d\033[0m\n' \"\$EXIT_CODE\"
+        fi
+        printf '  \033[90mPress Enter to close this window...\033[0m\n'
+        read -r
+        exit \$EXIT_CODE
+    "

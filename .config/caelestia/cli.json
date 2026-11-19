@@ -1,0 +1,6 @@
+{
+  "theme": {
+    "enableChromium": false,
+    "postHook": "/home/darshan/.local/bin/omarchy-theme-hook"
+  }
+}

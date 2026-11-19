@@ -1,0 +1,48 @@
+# Ignore sensitive credentials & tokens
+*.key
+*.pem
+*.pfx
+*.p12
+*.crt
+*.csr
+id_rsa*
+id_ed25519*
+*.env
+*.env.*
+*.secret*
+hosts.yml
+token*
+
+# Ignore backups & logs
+*.log
+*.tmp
+*.bak
+*.backup
+*.backup-*
+*~
+*.swp
+*.swo
+.dotfiles_backup/
+
+# Ignore caches & build artifacts
+__pycache__/
+*.pyc
+*.pyo
+.cache/
+*cache*/
+*Cache*/
+node_modules/
+dist/
+build/
+
+# Ignore databases & session states
+*.db
+*.sqlite
+*.sqlite3
+Recovery/
+recovery/
+logs/
+
+# Ignore OS & editor runtime state
+.DS_Store
+Thumbs.db

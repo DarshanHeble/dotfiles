@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# Night Light Control (hyprsunset)
+# Usage:
+#   nightlight-control get-temp
+#   nightlight-control get-status
+#   nightlight-control set-temp <Kelvin: 1000-6500>
+#   nightlight-control toggle
+
+STATE_FILE="$HOME/.cache/nightlight_temp"
+DEFAULT_TEMP=3500
+
+get_temp() {
+    if [ -f "$STATE_FILE" ]; then
+        cat "$STATE_FILE"
+    else
+        echo "$DEFAULT_TEMP"
+    fi
+}
+
+case "$1" in
+    get-status)
+        if pgrep -x hyprsunset >/dev/null 2>&1; then
+            echo "on"
+        else
+            echo "off"
+        fi
+        ;;
+    get-temp)
+        get_temp
+        ;;
+    set-temp)
+        TEMP="$2"
+        if [ -n "$TEMP" ]; then
+            echo "$TEMP" > "$STATE_FILE"
+            if pgrep -x hyprsunset >/dev/null 2>&1; then
+                hyprctl hyprsunset temperature "$TEMP" >/dev/null 2>&1
+            fi
+        fi
+        ;;
+    toggle)
+        if pgrep -x hyprsunset >/dev/null 2>&1; then
+            pkill -x hyprsunset
+            echo "off"
+        else
+            TEMP=$(get_temp)
+            hyprsunset -t "$TEMP" >/dev/null 2>&1 &
+            echo "on"
+        fi
+        ;;
+    on)
+        TEMP=$(get_temp)
+        if ! pgrep -x hyprsunset >/dev/null 2>&1; then
+            hyprsunset -t "$TEMP" >/dev/null 2>&1 &
+        else
+            hyprctl hyprsunset temperature "$TEMP" >/dev/null 2>&1
+        fi
+        ;;
+    off)
+        pkill -x hyprsunset
+        ;;
+esac

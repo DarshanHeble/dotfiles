@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Wi-Fi TUI Launcher (Impala)
+exec foot --app-id=floating-tui --title="Wi-Fi Manager (Impala)" impala "$@"
