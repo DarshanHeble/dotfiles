@@ -34,7 +34,6 @@ safe_link() {
     local dest="$2"
 
     if [ -e "$dest" ] || [ -L "$dest" ]; then
-        # Check if already pointing to the target
         if [ -L "$dest" ] && [ "$(readlink -f "$dest")" = "$(readlink -f "$src")" ]; then
             info "Already linked: $dest"
             return
@@ -71,6 +70,15 @@ info "Linking configuration directories to ~/.config/..."
 for config_item in "${DOTFILES_DIR}/.config"/*; do
     [ -e "$config_item" ] || continue
     name="$(basename "$config_item")"
+    if [ "$name" = "systemd" ]; then
+        # Handle systemd user units individually to avoid overriding whole systemd dir
+        mkdir -p "${HOME}/.config/systemd/user"
+        for unit in "${DOTFILES_DIR}/.config/systemd/user"/*; do
+            [ -e "$unit" ] || continue
+            safe_link "$unit" "${HOME}/.config/systemd/user/$(basename "$unit")"
+        done
+        continue
+    fi
     safe_link "$config_item" "${HOME}/.config/${name}"
 done
 
@@ -84,7 +92,18 @@ for bin_item in "${DOTFILES_DIR}/.local/bin"/*; do
     safe_link "$bin_item" "${HOME}/.local/bin/${name}"
 done
 
-# 3. Symlink home dotfiles
+# 3. Symlink ~/.local/state/caelestia state themes and schemes
+if [ -d "${DOTFILES_DIR}/.local/state/caelestia" ]; then
+    info "Linking Caelestia scheme & palettes to ~/.local/state/caelestia/..."
+    mkdir -p "${HOME}/.local/state/caelestia"
+    for state_item in "${DOTFILES_DIR}/.local/state/caelestia"/*; do
+        [ -e "$state_item" ] || continue
+        name="$(basename "$state_item")"
+        safe_link "$state_item" "${HOME}/.local/state/caelestia/${name}"
+    done
+fi
+
+# 4. Symlink home dotfiles
 info "Linking home directory dotfiles..."
 for home_file in "${DOTFILES_DIR}/home"/.*; do
     [ -f "$home_file" ] || continue
@@ -93,7 +112,7 @@ for home_file in "${DOTFILES_DIR}/home"/.*; do
     safe_link "$home_file" "${HOME}/${name}"
 done
 
-# 4. dconf settings
+# 5. dconf settings
 if [ -f "${DOTFILES_DIR}/dconf/settings.dconf" ] && command -v dconf &>/dev/null; then
     if [ "$DRY_RUN" = false ]; then
         read -p "Do you want to load dconf desktop settings now? (y/N): " -n 1 -r || true
